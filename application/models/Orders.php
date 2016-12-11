@@ -72,7 +72,6 @@ class Orders extends CI_Model {
         return $result;
     }
 
-    // test for at least one menu item in each category
     public function validate() 
     {
         // assume no items in each category

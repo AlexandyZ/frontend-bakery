@@ -1,6 +1,14 @@
 <?php
 
-//defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+/**
+ * Sales page allows any user to order products from the store. 
+ * The users can check the orders they already ordered, and check details as well.
+ * When start a new order, the page will show all the products that are selling in 
+ * the store, and users can order any products that are avaliable in the stock.
+ * When cancel the order, return the orders page.
+ **/
 
 class Sales extends Application
 {
@@ -19,12 +27,6 @@ class Sales extends Application
         if ($this->session->has_userdata('orders'))
             $this->keep_shopping();
         else $this->summarize();
-
-        /*$stuff = file_get_contents('../data/receipt.md');
-        $this->data['order'] = $this->parsedown->parse($stuff);
-        $this->data['pagebody'] = 'sales_view';
-		$this->data['items'] = $this->recipes->all();
-		$this->render('template');*/
     }
 
     public function summarize() 
@@ -77,8 +79,8 @@ class Sales extends Application
     public function add($what) 
     {
         $orders = new Orders($this->session->userdata('orders'));
-        $orders->additem($what);
-        $orders->updateRecipes($what);
+        $orders->additem($what); 
+        $orders->updateRecipes($what);     
         $this->keep_shopping();
         $this->session->set_userdata('orders',(array)$orders);
         redirect('/Sales');
@@ -94,13 +96,13 @@ class Sales extends Application
         $this->index();
     }
 
-    public function checkout() 
+    public function checkout($what) 
     {
         $orders = new Orders($this->session->userdata('orders'));
+        
         // ignore invalid requests
         /*if (! $orders->validate())
             redirect('/Sales');*/
-
         $orders->save();
         $this->session->unset_userdata('orders');
 
@@ -117,7 +119,7 @@ class Sales extends Application
     }
 
     public function examine($which)
-     {
+    {
         $orders = new Orders ('../data/order' . $which . '.xml');
         $stuff = $orders->receipt($which);
         $this->data['content'] = $this->parsedown->parse($stuff);

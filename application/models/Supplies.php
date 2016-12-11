@@ -15,19 +15,7 @@ class Supplies extends MY_Model {
         //*** Explicitly load the REST libraries.
         $this->load->library(['curl', 'format', 'rest']);
     }
-    /**
-     * Returns all the ports from the xml file
-     * @return the ports
-     */
-    function getPorts()
-    {
-        $ports = array();
-        foreach ($this->xml->ports->children() as $port)
-        {
-            $ports[(string) $port['code']] = $port->__toString();
-        }
-        return $ports;
-    }
+    //set rules to check for Receiving edit form on Receiving Page before update item to database
     function rules() {
         $config = [
             ['field'=>'id', 'label'=>'Menu code'],
@@ -38,7 +26,7 @@ class Supplies extends MY_Model {
         ];
         return $config;
     }
-
+    //set rules to check for Receiving edit form on Admin Page before update item to database
     function adminSupplyRules() {
         $config = [
             ['field'=>'id', 'label'=>'Menu code'],
@@ -94,7 +82,6 @@ class Supplies extends MY_Model {
     {
         $this->rest->initialize(array('server' => REST_SERVER));
         $this->rest->option(CURLOPT_PORT, REST_PORT);
-
         $retrieved = $this->rest->put('/maintenance/item/id/' . $record->id, json_encode($record));
     }
 

@@ -60,6 +60,8 @@ class Administrator extends Application
 
         $this->data['action'] = (empty($key)) ? 'Adding' : 'Editing';
         // build the form fields
+        // makeTextField (Label, database column name, record to insert)
+        // disabled field => makeLaBel (Label, database column name, record to insert)
         $this->data['fid'] = makeLaBel('Item Id', 'id', $record->id);
         $this->data['fname'] = makeTextField('Item Name', 'name', $record->name);
         $this->data['fonhand'] = makeTextField('On Hand amount, units (g)', 'qty_onhand', $record->qty_onhand);
@@ -68,20 +70,19 @@ class Administrator extends Application
 
         // show the editing form
         $this->data['pagebody'] = "administrator_supplies-edit_view";
+        //this is called when submit button is click ,make submit button
         $this->data['zsubmit'] = makeSubmitButton('Save', 'Submit changes');
         $this->show_any_errors();
         $this->render();
     }
-
-
-
+    //this is called when cancel button is click, cancel the transection on editing form
     function cancel()
     {
         $this->session->unset_userdata('key');
         $this->session->unset_userdata('record');
         $this->index();
     }
-
+    //this is called when sabe button is click, save contents on editing form to database
     function saveSupplies()
     {
         // try the session first
@@ -110,8 +111,6 @@ class Administrator extends Application
         if ($key == null)
             if ($this->supplies->exists($record->id))
                 $this->error_messages[] = 'Duplicate id adding new menu item';
-        /* if (! $this->categories->exists($record->category))
-             $this->error_messages[] = 'Invalid category code: ' . $record->category;*/
 
         // save or not
         if (! empty($this->error_messages)) {
@@ -129,7 +128,7 @@ class Administrator extends Application
         // and redisplay the list
         $this->index();
     }
-
+    //show error of fields form
     function show_any_errors() {
         $result = '';
         if (empty($this->error_messages)) {
@@ -143,6 +142,7 @@ class Administrator extends Application
         $this->data['error_messages'] = $this->parser->parse('mtce-errors',
             ['error_messages' => $result], true);
     }
+    //this is called when delete button is click, delete items from database
     function delete() {
         $key = $this->session->userdata('key');
         $record = $this->session->userdata('record');

@@ -1,0 +1,9 @@
+<<<<<<< HEAD
+Ordered 90.00 quantities of Flour for 45.0 $ per unit - 2016-12-08T20:54:53-08:00
+
+Ordered 20.00 quantities of Flour for 9.0 $ per unit - 2016-12-09T20:07:43+01:00
+
+Ordered 20.00 quantities of Flour for 19.0 $ per unit - 2016-12-09T20:08:17+01:00
+
+=======
+>>>>>>> 23a0189c84ffbca19505b018c46174476b3d8dc2

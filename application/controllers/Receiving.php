@@ -32,8 +32,9 @@ class Receiving extends Application
             return;
         }
 
-        // this is the view we want shown
+        // this is the view we want shown on Receiving page
         $this->data['pagebody'] = 'receiving_view';
+        // show all the items from supplies model (database) by using all() function
 		$this->data['items'] = $this->supplies->all();
 		$this->render();
 	}
@@ -50,10 +51,10 @@ class Receiving extends Application
             return;
         }
 
-        // try the session first
+        // set user role, just admin can modify this page
         $key = $this->session->userdata('key');
         $record = $this->session->userdata('record');
-
+        //show the items by id from supplies model
         if(empty($record)){
             $record = $this->supplies->get($id);
             $key = $id;
@@ -64,9 +65,8 @@ class Receiving extends Application
         //$this->data['content'] = "Looking at " . $key . ': ' . $record->name;
         $this->data['action'] = (empty($key)) ? 'Adding' : 'Editing';
         // build the form fields
-       // $this->data['items'] = $this->supplies->get($id);
-
         // makeTextField (Label, database column name, record to insert)
+        // disabled field => makeLaBel (Label, database column name, record to insert)
         $originalAmount = 0;
         $originalAmount = $record->qty_inventory;
         $this->session->set_userdata('originalAmount',$originalAmount);
@@ -78,10 +78,13 @@ class Receiving extends Application
 
         // show the editing form
         $this->data['pagebody'] = "receiving-edit_view";
+        //this is called when submit button is click ,make submit button
         $this->data['zsubmit'] = makeSubmitButton('Save', 'Submit changes');
+        //show error if any fields fail the rule after click submit button
         $this->show_any_errors();
         $this->render();
     }
+    //this is called when cancel button is click, cancel the transection on editing form
     function cancel()
     {
         $this->session->unset_userdata('key');
@@ -89,6 +92,7 @@ class Receiving extends Application
         $this->index();
         redirect('/Receiving');
     }
+    //this is called when sabe button is click, save contents on editing form to database
     function save() {
         // try the session first
         $key = $this->session->userdata('key');
@@ -113,8 +117,9 @@ class Receiving extends Application
             }
         $this->session->set_userdata('record',$record);
 
-        // validate
+        // validate fields form
         $this->load->library('form_validation');
+        //set the field rule on supplies model
         $this->form_validation->set_rules($this->supplies->rules());
         if ($this->form_validation->run() != TRUE)
             $this->error_messages = $this->form_validation->error_array();
@@ -164,7 +169,7 @@ class Receiving extends Application
         // and redisplay the list
         $this->index();
     }
-
+    //show error of fields form
     function show_any_errors() {
         $result = '';
         if (empty($this->error_messages)) {
@@ -178,6 +183,7 @@ class Receiving extends Application
         $this->data['error_messages'] = $this->parser->parse('mtce-errors',
             ['error_messages' => $result], true);
     }
+    //this is called when delete button is click, delete items from database
     function delete() {
         $key = $this->session->userdata('key');
         $record = $this->session->userdata('record');
@@ -187,6 +193,7 @@ class Receiving extends Application
         }
         $this->index();
     }
+    //add new items to database
     function add() {
         // Handle user-role to lock out certain types of users
         $userrole = $this->session->userdata('userrole');
@@ -198,6 +205,7 @@ class Receiving extends Application
         }
 
         $key = NULL;
+        //create a new item
         $record = $this->supplies->create();
         $this->session->set_userdata('key', $key);
         $this->session->set_userdata('record', $record);
